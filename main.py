@@ -14,4 +14,30 @@ from sklearn.preprocessing import LabelEncoder
 with open('Intent.json') as f:
     data = json.load(f)
 
-print(data)
+
+training_sentences = []     # holds our training data
+training_labels =[]     # holds our target labels
+labels = []
+responses = []
+
+
+for intent in data['intents']:
+    for texts in intent['text']:
+        training_sentences.append(texts)
+        training_labels.append(intent['intent'])
+    responses.append(intent['responses'])
+
+    if intent['intent'] not in labels:
+        labels.append(intent['intent'])
+
+
+num_classes = len(labels)
+
+
+lbl_encoder = LabelEncoder()
+lbl_encoder.fit(training_labels)
+training_labels =lbl_encoder.transform(training_labels)
+
+
+
+
