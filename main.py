@@ -39,5 +39,27 @@ lbl_encoder.fit(training_labels)
 training_labels =lbl_encoder.transform(training_labels)
 
 
+vocab_size = 1000
+embedding_dim = 16
+max_len = 20
+oov_token = '<00v>'
 
 
+tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_token)
+tokenizer.fit_on_texts(training_sentences)
+word_index = tokenizer.word_index
+sequences = tokenizer.texts_to_sequences(training_sentences)
+padded_sequences = pad_sequences(sequences, truncating='post', maxlen=max_len)
+
+
+# Training our model
+model = Sequential()
+model.add(Embedding(vocab_size, embedding_dim, input_length=max_len))
+model.add(GlobalAveragePooling1D())
+model.add(Dense(16, activation='relu'))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(num_classes, activation='softmax'))
+
+model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+model.summary()
